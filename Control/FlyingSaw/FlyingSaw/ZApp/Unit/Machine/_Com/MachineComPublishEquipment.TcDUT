@@ -14,6 +14,11 @@ STRUCT
   {attribute 'ZId' := '805b377d-816e-493b-a105-09954c5e25a1'}
 {endregion}
 
+{region "BoxDetected : Digital"}
+  BoxDetected : ZApplication.DigitalComPublish;
+  {attribute 'ZId' := 'd9755a0b-6503-481c-99e0-54f892b6c08c'}
+{endregion}
+
 {attribute '__ZwPlcUnitComDeclaration__'} // Do not remove this attribute! It is used for code generation.
 
 END_STRUCT

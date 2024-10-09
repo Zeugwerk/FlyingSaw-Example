@@ -16,7 +16,9 @@ TYPE MachineStep :
   ,StopEnd
 
   ,AutomaticBegin
-  ,AutomaticRunTool
+  ,AutomaticWaitBox
+  ,AutomaticMoveToBox
+  ,AutomaticMoveWithBox
   ,AutomaticEnd
   
   ,GoHomeBegin

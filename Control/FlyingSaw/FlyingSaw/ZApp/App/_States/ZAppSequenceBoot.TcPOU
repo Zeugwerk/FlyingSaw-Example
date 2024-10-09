@@ -83,7 +83,9 @@ UNTIL _step.IsNotRepeatable() OR_ELSE NOT Busy END_REPEAT]]></ST>
     <Method Name="LoadDefaultData" Id="{fa9633c4-76dc-4ebb-990b-7115ef78f212}">
       <Declaration><![CDATA[METHOD FINAL LoadDefaultData]]></Declaration>
       <Implementation>
-        <ST><![CDATA[
+        <ST><![CDATA[ZGlobal.Data.Machine.Machine.Highspeed := 150;
+ZGlobal.Data.Machine.Machine.Slowspeed := 120;
+
 {attribute '__ZwPlcUnitLoadDefaultData__'} // Do not remove this attribute! It is used for code generation.]]></ST>
       </Implementation>
     </Method>

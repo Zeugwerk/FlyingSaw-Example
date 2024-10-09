@@ -10,6 +10,8 @@ STRUCT
   
   // unit context
   Unit : ZComUnit;
+  
+  Boxes : BoxesCom;
 
 END_STRUCT
 END_TYPE

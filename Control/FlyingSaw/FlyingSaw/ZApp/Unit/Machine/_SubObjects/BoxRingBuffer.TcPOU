@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="BoxRingBuffer" Id="{4a99f8b2-47b9-47d6-8ec1-a67fc347ff72}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK BoxRingBuffer EXTENDS RingBuffer
+VAR
+  _bufferPtr : POINTER TO Box;  
+END_VAR
+VAR_STAT
+  BoxId : INT := 1;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Append" Id="{a8e942af-e8e2-43cd-9904-1704637c88bd}">
+      <Declaration><![CDATA[METHOD Append
+VAR
+  i : DINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[i := IndexOfNextItem();
+
+_bufferPtr[i].BoxId := THIS^.BoxId;
+_bufferPtr[i].DetectedAt := ZModuleProgram.Datetime.UnixTimestamp();
+_bufferPtr[i].CompletionRatio := 0;
+
+AppendIndex();
+
+THIS^.BoxId := THIS^.BoxId + 1;
+IF THIS^.BoxId > 999
+THEN
+  THIS^.BoxId := 1;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{b7be1ef1-03c7-4484-8c4f-226576c37026}">
+      <Declaration><![CDATA[/// Initializes the RingBuffer at construction time of the object by providing the bufferSize.
+/// It also inidializes the pointers of head and tail with an internally stored variable.
+METHOD FB_init : BOOL
+VAR_INPUT
+  bInitRetains : BOOL; //< if TRUE, the retain variables are initialized (warm start / cold start)
+  bInCopyCode : BOOL; //< if TRUE, the instance afterwards gets moved into the copy code (online change)
+  bufferSize : DINT; //< size of the **managable** buffer. The actual databuffer needs to be one element larger than bufferSize, i.e. data : ARRAY[0..bufferSize] OF ???
+  bufferPtr : POINTER TO Box;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_bufferPtr := bufferPtr;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Front" Id="{e4dfb401-69ee-4441-8f06-4c28e27b76c8}">
+      <Declaration><![CDATA[METHOD Front : REFERENCE TO Box
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT THIS^.Empty
+THEN
+  Front REF= _bufferPtr[THIS^.IndexOfFirstItem()];
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

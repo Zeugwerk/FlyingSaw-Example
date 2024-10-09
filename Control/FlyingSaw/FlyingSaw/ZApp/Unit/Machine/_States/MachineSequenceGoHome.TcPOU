@@ -32,7 +32,7 @@ REPEAT
     (* -------------------------------------------------------------------------------------------------------------------------------- *)
       IF _step.OnEntry()
       THEN
-        _axis.ToolX.HomingAsync(THIS^);
+        _axis.ToolX.MoveAbsoluteAsync(THIS^, 300, _data.Machine.Slowspeed);
         _axis.TransportX.HomingAsync(THIS^);  
 			END_IF
       
