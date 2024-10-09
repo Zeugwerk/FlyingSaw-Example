@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="MachineDataRef" Id="{a70a074b-b74a-45fa-9720-701d133904fa}">
+    <Declaration><![CDATA[/// container for all data that are used by the unit
+TYPE MachineDataRef :
+STRUCT
+  Config : REFERENCE TO MachineDataConfig; // data required for booting the unit (axes configuration, simulation, parameters that have to be written in PREOP, ...)
+  Machine : REFERENCE TO MachineDataMachine; // speeds, positions, ...
+  Calibration : REFERENCE TO MachineDataCalibration; // offsets, shifts of nominal to actual values
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="ZDataMachine" Id="{85d511a4-5073-453e-ac1e-e5be1cbd1c5d}">
+    <Declaration><![CDATA[TYPE ZDataMachine :
+STRUCT
+{region "Machine"}
+{IF NOT (defined (Machine_disabled))}
+  Machine : MachineDataMachine;
+  {attribute 'ZId' := 'ffcc16ae-32b8-4aad-8514-f391c00062a3'}
+{END_IF}
+{endregion}
+{attribute '__ZwPlcApplicationDataMachineDeclaration__'} // Do not remove this attribute! It is used for code generation.
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

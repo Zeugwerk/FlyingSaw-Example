@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="ZComUnit" Id="{16823e53-4968-4599-b5b4-8b1aee3a224b}">
+    <Declaration><![CDATA[TYPE ZComUnit :
+STRUCT
+{region "Machine"}
+{IF NOT (defined (Machine_disabled))}
+  Machine : MachineCom;
+  {attribute 'ZId' := 'ffcc16ae-32b8-4aad-8514-f391c00062a3'}
+{END_IF}
+{endregion}
+{attribute '__ZwPlcApplicationComUnitDeclaration__'} // Do not remove this attribute! It is used for code generation.
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

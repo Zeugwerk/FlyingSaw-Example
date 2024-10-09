@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="MachineDataCalibration" Id="{c210f79c-9c32-40fe-9729-b9f7716a0d49}">
+    <Declaration><![CDATA[/// calibration that is determined by calibration sequences of the unit (static offsets, shifts)
+TYPE MachineDataCalibration :
+STRUCT
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

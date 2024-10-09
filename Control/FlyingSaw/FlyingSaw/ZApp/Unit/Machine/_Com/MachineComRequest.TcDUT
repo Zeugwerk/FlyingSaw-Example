@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="MachineComRequest" Id="{ca4e739a-0473-4c05-bd3e-49b0920a09f2}">
+    <Declaration><![CDATA[TYPE MachineComRequest :
+STRUCT
+  Start : BOOL;
+  Stop : BOOL;
+  GoHome : BOOL;
+  Halt : BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

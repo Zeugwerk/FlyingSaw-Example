@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="ZModuleProgram" Id="{a120f957-5953-492b-ac4f-29b84ddfacdc}" SpecialFunc="None">
+    <Declaration><![CDATA[/// Zeugwerk Application
+PROGRAM ZModuleProgram
+VAR_INPUT
+{region "ZModuleProgram : Utility"}
+  App : ZApp(name:='Zeugwerk-Application Template', com:=ZGlobal.Com.App);
+  Datetime : ZAux.DateTimeUM;
+  {attribute 'ZId' := ''}
+{endregion}
+{region "ZModuleProgram : Logging"}
+  Alarming : ZApplication.Alarming(App, datetime := Datetime, com := ZGlobal.Com.Alarming);
+  LoggerHmi : ZApplication.Messaging(App, datetime := Datetime, com := ZGlobal.Com.Messages);
+  LoggerFile : ZAux.LoggerFile7FF(App, datetime := Datetime, filePath:='C:\Zeugwerk\logs\messages.log', target:='');
+  Logger : ZAux.Logging;
+  {attribute 'ZId' := ''}
+{endregion}  
+{attribute '__ZwPlcApplicationModuleProgramDeclaration__'} // Do not remove this attribute! It is used for code generation.
+{region "Machine"}
+{undefine RunInSeparateProgram}
+{IF NOT (defined (Machine_disabled)) AND NOT (defined (RunInSeparateProgram))}
+  Machine : MachineUnit(name := 'Machine', // name of the unit (for logging)
+					  parent := App, // caller of the Unit's cyclic method. If the Unit runs in its own context use 0
+						configdata := ZGlobal.Data.Config.Machine,
+						machinedata := ZGlobal.Data.Machine.Machine,
+						calibrationdata := ZGlobal.Data.Calibration.Machine,
+						com := ZGlobal.Com.Unit.Machine);
+  {attribute 'section' := '__ZwPlcUnitProgramDeclaration__'}
+  {attribute 'ZId' := 'ffcc16ae-32b8-4aad-8514-f391c00062a3'}
+{END_IF}
+{endregion}
+{attribute '__ZwPlcUnitProgramDeclaration__'} // Do not remove this attribute! It is used for code generation.
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[{region "ZModuleProgram : Utility"}
+  Datetime.Cyclic();
+  App.Cyclic();
+  {attribute 'ZId' := ''}
+{endregion}
+{attribute '__ZwPlcApplicationModuleProgramImplementation__'} // Do not remove this attribute! It is used for code generation.
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

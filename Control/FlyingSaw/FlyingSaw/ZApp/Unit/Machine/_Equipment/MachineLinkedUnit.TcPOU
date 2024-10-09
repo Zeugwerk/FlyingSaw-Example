@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="MachineLinkedUnit" Id="{8c6c3237-47a6-4d51-ae9b-e8dc44b4f1ff}" SpecialFunc="None">
+    <Declaration><![CDATA[/// This function block is a container for all linked units that are used by this unit.
+/// Linked units can be addressed through their individual interface.
+FUNCTION_BLOCK MachineLinkedUnit EXTENDS MachineContainer
+VAR_INPUT
+{attribute '__ZwPlcUnitEquipmentDeclaration__'} // Do not remove this attribute! It is used for code generation.
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF _isInitialized
+THEN
+  RETURN;
+END_IF
+
+{attribute '__ZwPlcUnitEquipmentImplementation__'} // Do not remove this attribute! It is used for code generation.
+
+_isInitialized := TRUE;]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
