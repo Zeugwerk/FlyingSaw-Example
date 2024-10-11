@@ -5,7 +5,7 @@
 PROGRAM ZModuleProgram
 VAR_INPUT
 {region "ZModuleProgram : Utility"}
-  App : ZApp(name:='Zeugwerk-Application Template', com:=ZGlobal.Com.App);
+  App : ZApp(displayName:='Zeugwerk-Application Template', com:=ZGlobal.Com.App);
   Datetime : ZAux.DateTimeUM;
   {attribute 'ZId' := ''}
 {endregion}
@@ -20,7 +20,7 @@ VAR_INPUT
 {region "Machine"}
 {undefine RunInSeparateProgram}
 {IF NOT (defined (Machine_disabled)) AND NOT (defined (RunInSeparateProgram))}
-  Machine : MachineUnit(displayName := 'Machine', // name of the unit (for logging)
+  Machine : MachineUnit(name := 'Machine', // name of the unit (for logging)
 					  parent := App, // caller of the Unit's cyclic method. If the Unit runs in its own context use 0
 						configdata := ZGlobal.Data.Config.Machine,
 						machinedata := ZGlobal.Data.Machine.Machine,
