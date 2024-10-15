@@ -5,6 +5,17 @@
 VAR
   _step : ZCore.Step(MachineStep.AutomaticBegin, MachineStep.AutomaticEnd);
   _timer : ZAux.Timer;
+  
+  _boxDetectionTimer : ZAux.Timer;
+  _boxes : BoxRingBuffer(20, ADR(ZGlobal.Com.Boxes.Buffer));
+  _box : REFERENCE TO Box;
+  
+  _elapsedTime : LREAL;
+  _rt : ZAux.RealTime;
+  _otg : Struckig.Otg(0, 1);
+  _rand : ZAux.RandomUniform(seed:=0, low:=0.1, high:=0.2);
+  _moveToBoxDuration : LREAL := 0.5;
+  _startToken : ZCore.StartToken;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[IF NOT Busy THEN
@@ -32,11 +43,78 @@ REPEAT
     (* -------------------------------------------------------------------------------------------------------------------------------- *)
       IF _step.OnEntry()
       THEN
+        _boxes.SetLogicPtrs(ADR(ZGlobal.Com.Boxes.IndexOfFirst), ADR(ZGlobal.Com.Boxes.IndexOfNext));
+        _boxes.Clear();
+        
         _axis.TransportX.MoveVelocityAsync(THIS^, _data.Machine.Highspeed);
         _axis.ToolX.MoveInterpolatedPositionAsync(THIS^);
+        
+        _otg.CycleTime := _rt.CycleTimeInSeconds();
+        _otg.ControlInterface := Struckig.ControlInterfaceType.Position;
+        _otg.CurrentPosition[0] := _axis.ToolX.ActualPosition;
+        _otg.CurrentVelocity[0] := 0;
+        _otg.CurrentAcceleration[0] := 0;
+     
+        _otg.TargetPosition[0] := _otg.CurrentPosition[0];
+        _otg.TargetVelocity[0] := 0;
+        
+        _otg.MaxAcceleration[0] := 30000;
+        _otg.MaxJerk[0] := 3000000;
+        _otg.MaxVelocity[0] := 1000;
+        _otg.EnableAutoPropagate := TRUE;
 			END_IF
 
-      Await2(obj1:=_axis.TransportX, obj2:=_axis.ToolX, nextStep:=MachineStep.AutomaticEnd);
+      Await2(obj1:=_axis.TransportX, obj2:=_axis.ToolX, nextStep:=MachineStep.AutomaticWaitBox);
+
+    (* -------------------------------------------------------------------------------------------------------------------------------- *)
+    MachineStep.AutomaticWaitBox:
+    (* -------------------------------------------------------------------------------------------------------------------------------- *)
+      
+      IF _boxes.Size > 0
+      THEN
+        _box REF= _boxes.Front();
+        _step.SetNext(MachineStep.AutomaticMoveToBox);        
+			ELSE
+        _otg.ControlInterface := Struckig.ControlInterfaceType.Position;
+        _otg.TargetPosition[0] := 0;
+        _otg.TargetVelocity[0] := 0;
+      END_IF
+      
+    (* -------------------------------------------------------------------------------------------------------------------------------- *)
+    MachineStep.AutomaticMoveToBox:
+    (* -------------------------------------------------------------------------------------------------------------------------------- *)
+      IF _step.OnEntry()
+      THEN
+        _otg.ControlInterface := Struckig.ControlInterfaceType.Position;
+        _elapsedTime := LWORD_TO_LREAL(Now() - _box.DetectedAt) / 1000;
+        _otg.TargetPosition[0] := _data.Machine.Highspeed * _moveToBoxDuration + _data.Machine.Highspeed * _elapsedTime;
+        _otg.TargetVelocity[0] := _data.Machine.Highspeed;
+        _otg.MinDuration := _moveToBoxDuration;
+        
+      ELSIF _otg.State = Struckig.TrajectoryState.Error
+      THEN
+        Abort(_otg.ErrorMessage());
+      ELSIF _otg.State = Struckig.TrajectoryState.Idle
+      THEN
+        _step.SetNext(MachineStep.AutomaticMoveWithBox);
+      END_IF
+
+    (* -------------------------------------------------------------------------------------------------------------------------------- *)
+    MachineStep.AutomaticMoveWithBox:
+    (* -------------------------------------------------------------------------------------------------------------------------------- *)
+      IF _step.OnEntry()
+      THEN        
+        _timer.WaitAsync(1.5);
+      END_IF
+      
+      _box.CompletionRatio := _timer.ElapsedTimeNormalized();
+      
+      Await(obj1:=_timer, nextStep:=MachineStep.AutomaticWaitBox);
+      
+      IF _timer.Done
+      THEN
+        _boxes.PopFirstItem();
+			END_IF
 
     (* -------------------------------------------------------------------------------------------------------------------------------- *)
     MachineStep.AutomaticEnd:
@@ -46,7 +124,36 @@ REPEAT
   ELSE
     Abort('sequence contains unhandled step');
   END_CASE
-UNTIL _step.IsNotRepeatable() OR_ELSE NOT Busy END_REPEAT]]></ST>
+UNTIL _step.IsNotRepeatable() OR_ELSE NOT Busy END_REPEAT
+
+// Update trajactory
+IF _step.Index >= MachineStep.AutomaticWaitBox
+THEN
+  _otg();
+  
+  IF _otg.State = Struckig.TrajectoryState.Error
+  THEN
+    Abort(_otg.ErrorMessage());
+  END_IF
+  
+  _axis.ToolX.SetInterpolatedPosition(startToken:=_startToken, _otg.CurrentPosition[0]);
+  _axis.ToolX.SetInterpolatedVelocity(startToken:=_startToken, _otg.CurrentVelocity[0]);
+END_IF
+
+// check for incoming boxes
+IF _io.BoxDetected.RisingTrigger()
+THEN
+  _boxes.Append();  
+END_IF]]></ST>
     </Implementation>
+    <Method Name="Now" Id="{eb070939-90c2-4c16-acf2-05cfeb480fb6}">
+      <Declaration><![CDATA[METHOD Now : LWORD
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Now := ZModuleProgram.Datetime.UnixTimestamp();]]></ST>
+      </Implementation>
+    </Method>
   </POU>
 </TcPlcObject>

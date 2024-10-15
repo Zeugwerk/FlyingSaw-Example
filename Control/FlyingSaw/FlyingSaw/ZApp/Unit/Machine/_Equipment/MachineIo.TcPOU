@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="MachineIo" Id="{b12d53af-e0d4-4c52-a45d-8fb1aae34a28}" SpecialFunc="None">
     <Declaration><![CDATA[/// This function block is a container for all I/Os that are used by this unit.
@@ -11,6 +11,11 @@ VAR
 END_VAR
 VAR_INPUT
 
+{region "BoxDetected : DigitalInput"}
+  BoxDetected : ZEquipment.DigitalInput;
+  {attribute 'ZId' := 'd9755a0b-6503-481c-99e0-54f892b6c08c'}
+{endregion}
+
 {attribute '__ZwPlcUnitEquipmentDeclaration__'} // Do not remove this attribute! It is used for code generation.
 END_VAR
 ]]></Declaration>
@@ -22,8 +27,23 @@ END_IF
 
   _iobridge.SetLogger(_parent._logger);
 
-{attribute '__ZwPlcUnitEquipmentImplementation__'} // Do not remove this attribute! It is used for code generation.]]>
+{region "BoxDetected : DigitalInput"}
+  BoxDetected.SetLogger(_parent._logger);
+  BoxDetected.SetName('BoxDetected');
+  BoxDetected.SetSimulation(on:=_parent._data.Config.Simulated);
+  BoxDetected.SetLogic(ZEquipment.DigitalLogic.Normal);
+  _ioBridge.AddDigitalInput(BoxDetected, publish := _parent._com.Publish.Equipment.BoxDetected, subscribe := _parent._com.Subscribe.Equipment.BoxDetected);
 
-_isInitialized := TRUE;</ST></Implementation>
+  {region "UserInitCode"}
+  // put your individual init code for this I/O here
+  {endregion}
+
+  {attribute 'ZId' := 'd9755a0b-6503-481c-99e0-54f892b6c08c'}
+{endregion}
+
+{attribute '__ZwPlcUnitEquipmentImplementation__'} // Do not remove this attribute! It is used for code generation.
+
+_isInitialized := TRUE;]]></ST>
+    </Implementation>
   </POU>
 </TcPlcObject>

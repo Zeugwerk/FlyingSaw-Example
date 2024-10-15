@@ -36,6 +36,9 @@
     <Compile Include="ZApp\App\_SubObjects\ZAppSequence.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ZApp\Com\_DataTypes\BoxesCom.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ZApp\Com\_DataTypes\ZCom.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -85,6 +88,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ZApp\Unit\Machine\_Com\MachineComSubscribeEquipment.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ZApp\Unit\Machine\_DataTypes\Box.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ZApp\Unit\Machine\_DataTypes\MachineState.TcDUT">
@@ -138,6 +144,9 @@
     <Compile Include="ZApp\Unit\Machine\_States\MachineSequenceStop.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ZApp\Unit\Machine\_SubObjects\BoxRingBuffer.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ZApp\Unit\Machine\_SubObjects\MachineContainer.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -175,6 +184,10 @@
     <Folder Include="ZApp\Unit\Machine\_SubObjects" />
   </ItemGroup>
   <ItemGroup>
+    <PlaceholderReference Include="Struckig">
+      <DefaultResolution>Struckig, * (Stefan Besler)</DefaultResolution>
+      <Namespace>Struckig</Namespace>
+    </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc3_Module</Namespace>
@@ -200,7 +213,11 @@
       <Namespace>ZCore</Namespace>
     </PlaceholderReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="FlyingSaw.tmc">
+      <SubType>Content</SubType>
+    </None>
+  </ItemGroup>
   <ItemGroup>
     <PlaceholderResolution Include="ZApplication">
       <Resolution>ZApplication, 1.5.37.1 (Zeugwerk GmbH)</Resolution>

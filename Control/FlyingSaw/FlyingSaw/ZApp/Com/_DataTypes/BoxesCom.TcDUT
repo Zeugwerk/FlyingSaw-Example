@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="BoxesCom" Id="{08fe2898-bba2-4e9c-876d-d6b5306c5b83}">
+    <Declaration><![CDATA[TYPE BoxesCom :
+STRUCT
+  IndexOfFirst : DINT;
+  IndexOfNext : DINT;
+  Buffer : ARRAY [0..20] OF Box;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
