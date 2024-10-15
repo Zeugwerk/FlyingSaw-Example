@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="MachineStep" Id="{7c80ba62-51f3-466b-8e88-689159805cdb}">
+    <Declaration><![CDATA[/// This enumeration contains all steps that are used by the various sequences of a unit.
+/// Sequences use a subrange (***Begin to ***End) of this enumeration.
+{attribute 'qualified_only'}
+{attribute 'to_string'}
+TYPE MachineStep :
+(
+  Undefined := 0
+  
+  ,BootBegin
+  ,BootEnd 
+
+  ,StopBegin
+  ,StopEnd
+
+  ,AutomaticBegin
+  ,AutomaticRunTool
+  ,AutomaticEnd
+  
+  ,GoHomeBegin
+  ,GoHomeEnd 
+  
+  ,FaultReactionBegin
+  ,FaultReactionEnd
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

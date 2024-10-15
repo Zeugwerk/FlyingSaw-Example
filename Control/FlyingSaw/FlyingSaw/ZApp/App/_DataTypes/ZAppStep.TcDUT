@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="ZAppStep" Id="{afe41ba7-830e-4f70-b90f-ebbff7c2162f}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'to_string'}
+TYPE ZAppStep :
+(
+  Undefined := 0
+  
+  ,BootBegin
+  ,BootLoadDefaultData
+  ,BootEnd
+  ,BootFaultBegin
+  ,BootFaultEnd 
+  ,RunningBegin
+  ,RunningEnd   
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

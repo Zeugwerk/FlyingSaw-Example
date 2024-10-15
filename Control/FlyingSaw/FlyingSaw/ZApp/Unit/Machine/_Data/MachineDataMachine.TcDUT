@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="MachineDataMachine" Id="{6db7f25e-9e4d-45e0-91af-08bb7bbdd216}">
+    <Declaration><![CDATA[/// machine data that is used through most sequences of the unit (motor speed, axes positions, ...)
+TYPE MachineDataMachine :
+STRUCT
+  Slowspeed : LREAL;
+  Highspeed : LREAL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

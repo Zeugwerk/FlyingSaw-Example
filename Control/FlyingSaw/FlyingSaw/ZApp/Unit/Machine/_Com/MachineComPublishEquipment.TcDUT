@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="MachineComPublishEquipment" Id="{6a0d5755-c9e1-4fdf-af00-0d6a3a125dbd}">
+    <Declaration><![CDATA[TYPE MachineComPublishEquipment :
+STRUCT
+
+{region "TransportX : Axis"}
+  TransportX : ZApplication.AxisComPublish;
+  {attribute 'ZId' := 'e985697b-7ba2-4e1b-acce-25e7c1308b60'}
+{endregion}
+
+{region "ToolX : Axis"}
+  ToolX : ZApplication.AxisComPublish;
+  {attribute 'ZId' := '805b377d-816e-493b-a105-09954c5e25a1'}
+{endregion}
+
+{attribute '__ZwPlcUnitComDeclaration__'} // Do not remove this attribute! It is used for code generation.
+
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

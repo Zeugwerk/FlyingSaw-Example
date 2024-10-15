@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="ZAppSequenceBoot" Id="{0521cabf-0184-431a-94bb-c505c79bdf11}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK ZAppSequenceBoot EXTENDS ZAppSequence IMPLEMENTS ZCore.ISequence
+VAR
+  _step : ZCore.Step(ZAppStep.BootBegin, ZAppStep.BootEnd);
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF OnStart(_step)
+THEN
+  // init custom sequence variables here ...
+END_IF
+
+REPEAT
+  LogStep();
+
+  CASE _step.Index OF
+    (* -------------------------------------------------------------------------------------------------------------------------------- *)
+    ZAppStep.BootBegin:
+    (* -------------------------------------------------------------------------------------------------------------------------------- *)
+    
+      IF _step.OnEntry()
+      THEN
+        ZModuleProgram.LoggerFile.MinimumLevel := ZCore.LogLevel.Trace;
+        ZModuleProgram.Logger.AddLogger(ZModuleProgram.LoggerFile);        
+        {attribute '__ZwPlcAppZComModuleContext__'} // Do not remove this attribute! It is used for code generation.      
+      END_IF
+      
+	  IF ZModuleProgram.Datetime.State <> ZCore.ObjectState.Booting
+      THEN
+        _step.SetNext(ZAppStep.BootLoadDefaultData);        
+      END_IF
+      
+    (* -------------------------------------------------------------------------------------------------------------------------------- *)
+    ZAppStep.BootLoadDefaultData:
+    (* -------------------------------------------------------------------------------------------------------------------------------- *)
+
+      {warning 'The application is loading the default config data on every restart!'}
+      LoadDefaultConfigData();
+      
+      IF IsCommissioning()
+      THEN
+        LoadDefaultData();
+      END_IF
+      
+      _step.SetNext(ZAppStep.BootEnd);
+      
+    (* -------------------------------------------------------------------------------------------------------------------------------- *)
+    ZAppStep.BootEnd:
+    (* -------------------------------------------------------------------------------------------------------------------------------- *)
+      SetBusy(FALSE);
+      
+  ELSE
+    Abort('sequence contains unhandled step');
+  END_CASE
+UNTIL _step.IsNotRepeatable() OR_ELSE NOT Busy END_REPEAT]]></ST>
+    </Implementation>
+    <Method Name="IsCommissioning" Id="{a3ea03ec-ee5f-4d37-b289-be135ee49366}">
+      <Declaration><![CDATA[METHOD  IsCommissioning : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IsCommissioning := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="LoadDefaultConfigData" Id="{033f4bff-60a4-468c-8813-fef0ea28cd35}">
+      <Declaration><![CDATA[METHOD FINAL LoadDefaultConfigData]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+{region "Machine"}
+  {IF NOT (defined (Machine_disabled))}
+  ZGlobal.Data.Config.Machine.Simulated := TRUE;
+  {region "UserInitCode"}
+  // put your individual init code for this unit here
+  {endregion}
+  {END_IF}
+  {attribute 'ZId' := 'ffcc16ae-32b8-4aad-8514-f391c00062a3'}
+{endregion}
+
+{attribute '__ZwPlcUnitLoadDefaultConfigData__'} // Do not remove this attribute! It is used for code generation.
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="LoadDefaultData" Id="{fa9633c4-76dc-4ebb-990b-7115ef78f212}">
+      <Declaration><![CDATA[METHOD FINAL LoadDefaultData]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+{attribute '__ZwPlcUnitLoadDefaultData__'} // Do not remove this attribute! It is used for code generation.]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
